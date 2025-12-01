@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#E6F0FF">
+
+    <!-- 标题栏（北航特色） -->
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="64dp"-->
+<!--        android:background="#0066B3">-->
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:text="北航活动通"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            android:textSize="20sp"-->
+<!--            android:textStyle="bold" />-->
+<!--    </RelativeLayout>-->
+
+
+    <!-- activity_main.xml 导航条 -->
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        style="@style/CustomToolbar"-->
+<!--        android:title="北航活动通">-->
+
+<!--        &lt;!&ndash; 右侧个人中心按钮 &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/iv_user_center"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:src="@drawable/ic_user"-->
+<!--            android:layout_gravity="end"-->
+<!--            android:contentDescription="个人中心"/>-->
+<!--    </androidx.appcompat.widget.Toolbar>-->
+
+    <!-- 导航条（全屏无缝隙） -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
+        android:background="#0066B3"
+        android:titleTextColor="#FFFFFF"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="北航活动通"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/iv_user_center"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_user"
+        android:layout_gravity="end"
+        android:contentDescription="个人中心"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- 日历控件 -->
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_margin="16dp" />
+
+    <!-- 新增：显示当前选中的日期 -->
+    <TextView
+        android:id="@+id/tvCurrentDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="当前日期：2025-01-01"
+        android:textSize="16sp"
+        android:textColor="#0066B3" />
+
+    <!-- 活动列表标题 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:text="当日活动"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- 活动列表（ListView） -->
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="16dp" />
+
+
+</LinearLayout>

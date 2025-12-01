@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户登录"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="30dp"/>
+
+    <EditText
+        android:id="@+id/et_student_id_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入学号"
+        android:inputType="text"
+        android:layout_marginBottom="15dp"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/et_password_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入密码"
+        android:inputType="textPassword"
+        android:layout_marginBottom="20dp"
+        android:padding="10dp"/>
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="登录"
+        android:backgroundTint="#2196F3"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_go_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="没有注册？去注册"
+        android:textColor="#2196F3"
+        android:textSize="16sp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <TextView
+        android:id="@+id/tv_login_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="#FF0000"/>
+
+</LinearLayout>
