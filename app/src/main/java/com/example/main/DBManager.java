@@ -634,7 +634,7 @@ public class DBManager {
                 ActivityBean bean = new ActivityBean(
                         cursor.getInt(0), cursor.getString(1), cursor.getString(2),
                         cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                        cursor.getString(6), cursor.getInt(7)
+                        cursor.getString(6), cursor.getInt(7), cursor.getString(8)
                 );
                 list.add(bean);
             } while (cursor.moveToNext());
@@ -660,7 +660,7 @@ public class DBManager {
                 ActivityBean bean = new ActivityBean(
                         cursor.getInt(0), cursor.getString(1), cursor.getString(2),
                         cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                        cursor.getString(6), cursor.getInt(7)
+                        cursor.getString(6), cursor.getInt(7), cursor.getString(8)
                 );
                 list.add(bean);
             } while (cursor.moveToNext());

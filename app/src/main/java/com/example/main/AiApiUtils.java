@@ -64,12 +64,12 @@ public class AiApiUtils {
         prompt.append("\n### 已参与活动：\n");
         for (ActivityBean activity : interacted) {
 //            prompt.append(String.format("ID：%d，标题：%s，类型：%s，\n", activity.getId(), activity.getTitle(), activity.getType()));
-            prompt.append(String.format("ID：%d，标题：%s，类型：%s，时间：%s，地点：%s，描述：%s，组织者：%s\n", activity.getId(), activity.getTitle(), activity.getType(), activity.getTime(), activity.getLocation(), activity.getDescription(), activity.getOrganizer()));
+            prompt.append(String.format("ID：%d，标题：%s，类型：%s，时间：%s，地点：%s，描述：%s，组织者：%s，标签：%s\n", activity.getId(), activity.getTitle(), activity.getType(), activity.getTime(), activity.getLocation(), activity.getDescription(), activity.getOrganizer(), activity.getTag()));
         }
 
         prompt.append("\n### 候选活动：\n");
         for (ActivityBean activity : candidate) {
-            prompt.append(String.format("ID：%d，标题：%s，类型：%s，时间：%s，地点：%s，描述：%s，组织者：%s\n", activity.getId(), activity.getTitle(), activity.getType(), activity.getTime(), activity.getLocation(), activity.getDescription(), activity.getOrganizer()));
+            prompt.append(String.format("ID：%d，标题：%s，类型：%s，时间：%s，地点：%s，描述：%s，组织者：%s，标签：%s\n", activity.getId(), activity.getTitle(), activity.getType(), activity.getTime(), activity.getLocation(), activity.getDescription(), activity.getOrganizer(), activity.getTag()));
 //            prompt.append(String.format("ID：%d，标题：%s，类型：%s\n", activity.getId(), activity.getTitle(), activity.getType()));
         }
 
