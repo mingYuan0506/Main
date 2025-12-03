@@ -46,5 +46,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 // 最新版本可按需调整
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
+// 把新的一行添加到这里
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
 }

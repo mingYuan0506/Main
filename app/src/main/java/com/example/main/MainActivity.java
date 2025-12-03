@@ -1,10 +1,5 @@
 package com.example.main;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,157 +7,188 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    // 数据库和数据模型
     private DBManager dbManager;
+    private List<ActivityBean> activityBeanList;
+    private String currentUserId;
+    private String currentDate;
+
+    // UI 控件
+    private ListView listView;
     private CalendarView calendarView;
     private TextView tvCurrentDate;
-    private ListView listView;
-    private String currentDate;
-    private String currentUserId;
-    private List<ActivityBean> activityBeanList;
+    private ImageButton btnToggleView;
+    private LinearLayout calendarContainer;
+    private TextView tvListTitle;
 
-    private String selectedTag = null;
+    // 筛选相关
+    private Spinner spinnerTags;
+    private String selectedTag = null; // null 代表“全部”
 
-    private List<Button> tagButtons = new ArrayList<>();
+    // 视图状态变量
+    private boolean isAllActivitiesView = false; // false = 日历视图, true = 总览视图
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 【新增】Android 13+ 动态申请通知权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
             }
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        initViews();
 
-        ImageView ivUserCenter = findViewById(R.id.iv_user_center);
-        ivUserCenter.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, UserCenterActivity.class)
-                    .putExtra("USER_ID", currentUserId));
-        });
+        currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(new Date());
+        currentUserId = getIntent().getStringExtra("USER_ID");
+        dbManager = new DBManager(this);
 
+        setupTagSpinner(); // 设置筛选器
+        setupListeners();
+
+        updateView(); // 加载初始视图
+    }
+
+    private void initViews() {
         listView = findViewById(R.id.listView);
         calendarView = findViewById(R.id.calendarView);
         tvCurrentDate = findViewById(R.id.tvCurrentDate);
+        btnToggleView = findViewById(R.id.btn_toggle_view);
+        calendarContainer = findViewById(R.id.calendar_container);
+        tvListTitle = findViewById(R.id.tv_list_title);
+        spinnerTags = findViewById(R.id.spinner_tags);
+    }
 
-        currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(new Date());
-        tvCurrentDate.setText("当前日期：" + currentDate);
+    /**
+     * 初始化标签筛选的 Spinner
+     */
+    private void setupTagSpinner() {
+        String[] tags = new String[]{"全部", "德育", "美育", "劳育", "安全", "其他"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, tags);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTags.setAdapter(adapter);
 
-        currentUserId = getIntent().getStringExtra("USER_ID");
+        spinnerTags.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if (selectedItem.equals("全部")) {
+                    selectedTag = null;
+                } else {
+                    selectedTag = selectedItem;
+                }
+                // 每当用户做出新的筛选选择时，重新加载当前视图的数据
+                updateView();
+            }
 
-        dbManager = new DBManager(this);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+    }
 
-
-        setupTagButtons();
-
-        new Thread(() -> loadActivitiesByDate(currentDate)).start();
+    private void setupListeners() {
+        ImageView ivUserCenter = findViewById(R.id.iv_user_center);
+        ivUserCenter.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, UserCenterActivity.class);
+            intent.putExtra("USER_ID", currentUserId);
+            startActivity(intent);
+        });
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             String monthStr = String.format(Locale.CHINA, "%02d", month + 1);
             String dayStr = String.format(Locale.CHINA, "%02d", dayOfMonth);
             currentDate = year + "-" + monthStr + "-" + dayStr;
-            tvCurrentDate.setText("当前日期：" + currentDate);
-            loadActivitiesByDate(currentDate);
+            loadActivitiesByDate();
         });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            ActivityBean bean = activityBeanList.get(position);
-            Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-            intent.putExtra("ACTIVITY_ID", bean.getId());
-            intent.putExtra("USER_ID", currentUserId);
-            startActivity(intent);
+            if (activityBeanList != null && !activityBeanList.isEmpty()) {
+                ActivityBean bean = activityBeanList.get(position);
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtra("ACTIVITY_ID", bean.getId());
+                intent.putExtra("USER_ID", currentUserId);
+                startActivity(intent);
+            }
+        });
+
+        btnToggleView.setOnClickListener(v -> {
+            isAllActivitiesView = !isAllActivitiesView;
+            updateView();
         });
     }
 
-    private void loadActivitiesByDate(String date) {
-        new Thread(() -> {
-//            activityBeanList = dbManager.getActivityByDate(date);
+    private void updateView() {
+        if (isAllActivitiesView) {
+            calendarContainer.setVisibility(View.GONE);
+            tvListTitle.setText("所有活动");
+            btnToggleView.setImageResource(R.drawable.ic_calendar);
+            loadAllActivities();
+        } else {
+            calendarContainer.setVisibility(View.VISIBLE);
+            tvListTitle.setText("当日活动");
+            btnToggleView.setImageResource(R.drawable.ic_view_list);
+            loadActivitiesByDate();
+        }
+    }
 
-            final String finalTag = selectedTag; // 捕获状态变量到 final 变量供子线程使用
-            activityBeanList = dbManager.getActivityByDateAndTag(date, finalTag);
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if (activityBeanList.isEmpty()) {
-                    String[] emptyTip = new String[]{"当前日期暂无活动"};
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                            MainActivity.this, android.R.layout.simple_list_item_1, emptyTip);
-                    listView.setAdapter(adapter);
-                } else {
-                    String[] activityNames = new String[activityBeanList.size()];
-                    for (int i = 0; i < activityBeanList.size(); i++) {
-                        ActivityBean bean = activityBeanList.get(i);
-                        activityNames[i] = bean.getTitle() + " | " + bean.getTime().split(" ")[1];
-                    }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                            MainActivity.this, android.R.layout.simple_list_item_1, activityNames);
-                    listView.setAdapter(adapter);
-                }
-            });
+    private void loadAllActivities() {
+        new Thread(() -> {
+            activityBeanList = dbManager.getAllActivitiesByTag(selectedTag);
+            updateListView();
         }).start();
     }
 
-    private void setupTagButtons() {
-        Button btnDeyu = findViewById(R.id.btn_tag_deyu);
-        Button btnMeiyu = findViewById(R.id.btn_tag_meiyu);
-        Button btnLaoyu = findViewById(R.id.btn_tag_laoyu);
-        Button btnSafety = findViewById(R.id.btn_tag_safety);
-        Button btnOther = findViewById(R.id.btn_tag_other);
-        Button btnAll = findViewById(R.id.btn_tag_all);
-
-        tagButtons.add(btnDeyu);
-        tagButtons.add(btnMeiyu);
-        tagButtons.add(btnLaoyu);
-        tagButtons.add(btnSafety);
-        tagButtons.add(btnOther);
-        tagButtons.add(btnAll);
-
-        // 设置监听器，并把按钮自身传递过去
-        btnDeyu.setOnClickListener(v -> handleTagSelection("德育", (Button) v));
-        btnMeiyu.setOnClickListener(v -> handleTagSelection("美育", (Button) v));
-        btnLaoyu.setOnClickListener(v -> handleTagSelection("劳育", (Button) v));
-        btnSafety.setOnClickListener(v -> handleTagSelection("安全", (Button) v));
-        btnOther.setOnClickListener(v -> handleTagSelection("其他", (Button) v));
-        btnAll.setOnClickListener(v -> handleTagSelection(null, (Button) v));
-        // 默认选中“全选”按钮
-        btnAll.setSelected(true);
+    private void loadActivitiesByDate() {
+        new Thread(() -> {
+            activityBeanList = dbManager.getActivityByDateAndTag(currentDate, selectedTag);
+            runOnUiThread(() -> tvCurrentDate.setText("当前日期：" + currentDate));
+            updateListView();
+        }).start();
     }
 
-    // 【新增方法】：处理标签选择逻辑
-    private void handleTagSelection(String tag, Button selectedButton) {
-        // 1. 重置所有按钮的状态为“未选中”
-        for (Button button : tagButtons) {
-            button.setSelected(false);
-        }
-
-        // 2. 将被点击的按钮设为“选中”状态
-        selectedButton.setSelected(true);
-
-        // 3. 执行原有的筛选逻辑
-        selectedTag = tag;
-        loadActivitiesByDate(currentDate);
+    private void updateListView() {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (activityBeanList == null || activityBeanList.isEmpty()) {
+                String emptyTip = "暂无符合条件的活动";
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, new String[]{emptyTip});
+                listView.setAdapter(adapter);
+            } else {
+                String[] activityDisplayItems = new String[activityBeanList.size()];
+                for (int i = 0; i < activityBeanList.size(); i++) {
+                    ActivityBean bean = activityBeanList.get(i);
+                    String timeInfo = isAllActivitiesView ? bean.getTime() : bean.getTime().split(" ")[1];
+                    activityDisplayItems[i] = bean.getTitle() + " | " + timeInfo;
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, activityDisplayItems);
+                listView.setAdapter(adapter);
+            }
+        });
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        loadActivitiesByDate(currentDate);
+        updateView();
     }
 }
