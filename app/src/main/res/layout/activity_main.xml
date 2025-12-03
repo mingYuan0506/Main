@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!-- 导航条 -->
+    <!-- 导航条 (保持不变) -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -79,64 +79,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp" />
 
-        <!-- 【已补全】标签按钮 -->
-        <LinearLayout
-            android:id="@+id/tags_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_tag_deyu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_tag_button"
-                android:text="德育" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_tag_meiyu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_tag_button"
-                android:text="美育" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_tag_laoyu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_tag_button"
-                android:text="劳育" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_tag_safety"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_tag_button"
-                android:text="安全" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_tag_other"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_tag_button"
-                android:text="其他" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_tag_all"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_tag_button"
-                android:text="全选" />
-        </LinearLayout>
-
         <TextView
             android:id="@+id/tvCurrentDate"
             android:layout_width="wrap_content"
@@ -147,16 +89,35 @@
             android:textColor="#0066B3"
             android:textSize="16sp" />
 
+        <!-- 原来的标签按钮和列表标题已被移出 -->
+    </LinearLayout>
+
+    <!-- 【新增】列表标题和筛选器容器 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp">
+
         <TextView
             android:id="@+id/tv_list_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_weight="1"
             android:text="当日活动"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <Spinner
+            android:id="@+id/spinner_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:minWidth="120dp"
+            android:paddingEnd="16dp" />
     </LinearLayout>
 
     <!-- 活动列表（ListView） -->

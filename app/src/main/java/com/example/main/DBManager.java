@@ -220,6 +220,48 @@ public class DBManager {
         db.close();
         return list;
     }
+    /**
+     * 【新增方法】
+     * 获取所有活动，并可以根据标签进行筛选。
+     * @param tag 要筛选的标签。如果为 null 或空字符串，则返回所有活动。
+     * @return 筛选后的活动列表
+     */
+    public List<ActivityBean> getAllActivitiesByTag(String tag) {
+        List<ActivityBean> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String sql;
+        String[] selectionArgs;
+
+        // 如果提供了有效的标签，则添加 WHERE 子句进行筛选
+        if (tag != null && !tag.isEmpty()) {
+            sql = "SELECT * FROM activities WHERE tag = ? ORDER BY time ASC";
+            selectionArgs = new String[]{tag};
+        } else {
+            // 否则，查询所有活动
+            sql = "SELECT * FROM activities ORDER BY time ASC";
+            selectionArgs = null;
+        }
+
+        Cursor cursor = db.rawQuery(sql, selectionArgs);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                ActivityBean bean = new ActivityBean(
+                        cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                        cursor.getString(3), cursor.getString(4), cursor.getString(5),
+                        cursor.getString(6), cursor.getInt(7), cursor.getString(8)
+                );
+                list.add(bean);
+            } while (cursor.moveToNext());
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
+        return list;
+    }
     // 同理修复getAllActivityList方法
     public ActivityBean getActivityById(int activityId) {
         ActivityBean activityBean = null;
