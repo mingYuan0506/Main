@@ -1,44 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E6F0FF"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <!-- 标题栏（北航特色） -->
-    <!--    <RelativeLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="64dp"-->
-    <!--        android:background="#0066B3">-->
-    <!--        <TextView-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_centerInParent="true"-->
-    <!--            android:text="北航活动通"-->
-    <!--            android:textColor="#FFFFFF"-->
-    <!--            android:textSize="20sp"-->
-    <!--            android:textStyle="bold" />-->
-    <!--    </RelativeLayout>-->
-
-
-    <!-- activity_main.xml 导航条 -->
-    <!--    <androidx.appcompat.widget.Toolbar-->
-    <!--        android:id="@+id/toolbar"-->
-    <!--        style="@style/CustomToolbar"-->
-    <!--        android:title="北航活动通">-->
-
-    <!--        &lt;!&ndash; 右侧个人中心按钮 &ndash;&gt;-->
-    <!--        <ImageView-->
-    <!--            android:id="@+id/iv_user_center"-->
-    <!--            android:layout_width="24dp"-->
-    <!--            android:layout_height="24dp"-->
-    <!--            android:src="@drawable/ic_user"-->
-    <!--            android:layout_gravity="end"-->
-    <!--            android:contentDescription="个人中心"/>-->
-    <!--    </androidx.appcompat.widget.Toolbar>-->
-
-    <!-- 导航条（全屏无缝隙） -->
+    <!-- 导航条 -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -49,107 +19,145 @@
         android:paddingTop="24dp"
         android:paddingEnd="16dp"
         android:paddingBottom="24dp"
-        android:titleTextColor="#FFFFFF">
+        app:contentInsetStart="0dp"
+        app:titleTextColor="#FFFFFF">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="北航活动通"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_user_center"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="end"
-            android:contentDescription="个人中心"
-            android:src="@drawable/ic_user" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="北航活动通"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_toggle_view"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="切换视图"
+                    android:src="@drawable/ic_view_list"
+                    app:tint="@android:color/white" />
+
+                <ImageView
+                    android:id="@+id/iv_user_center"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="个人中心"
+                    android:src="@drawable/ic_user" />
+            </LinearLayout>
+        </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- 日历控件 -->
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_margin="16dp" />
-
-    <!-- 新增：显示当前选中的日期 -->
+    <!-- 日历及相关控件的容器 -->
     <LinearLayout
+        android:id="@+id/calendar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_tag_deyu"
-            android:background="@drawable/selector_tag_button"
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp" />
+
+        <!-- 【已补全】标签按钮 -->
+        <LinearLayout
+            android:id="@+id/tags_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_tag_deyu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_tag_button"
+                android:text="德育" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_tag_meiyu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_tag_button"
+                android:text="美育" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_tag_laoyu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_tag_button"
+                android:text="劳育" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_tag_safety"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_tag_button"
+                android:text="安全" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_tag_other"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_tag_button"
+                android:text="其他" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_tag_all"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_tag_button"
+                android:text="全选" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvCurrentDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="德育" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="当前日期：2025-01-01"
+            android:textColor="#0066B3"
+            android:textSize="16sp" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_tag_meiyu"
-            android:background="@drawable/selector_tag_button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_list_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="美育" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="当日活动"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_tag_laoyu"
-            android:background="@drawable/selector_tag_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="劳育" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_tag_safety"
-            android:background="@drawable/selector_tag_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="安全" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_tag_other"
-            android:background="@drawable/selector_tag_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="其他" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_tag_all"
-            android:background="@drawable/selector_tag_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="全选" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvCurrentDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:text="当前日期：2025-01-01"
-        android:textColor="#0066B3"
-        android:textSize="16sp" />
-
-    <!-- 活动列表标题 -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:text="当日活动"
-        android:textSize="18sp"
-        android:textStyle="bold" />
 
     <!-- 活动列表（ListView） -->
     <ListView
@@ -158,6 +166,5 @@
         android:layout_height="0dp"
         android:layout_margin="16dp"
         android:layout_weight="1" />
-
 
 </LinearLayout>
